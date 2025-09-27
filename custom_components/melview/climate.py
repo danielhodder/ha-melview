@@ -331,11 +331,13 @@ class MelViewClimate(ClimateEntity):
     
     def set_preset_mode(self, preset_mode):
         """Set new target preset mode."""
-        _LOGGER.warning("Setting preset mode not implemented yet")
+        if self._device.set_preset(preset_mode):
+            self._preset = preset_mode
 
     async def async_set_preset_mode(self, preset_mode):
         """Set new target preset mode."""
-        _LOGGER.warning("Setting preset mode not implemented yet")
+        if await self._device.async_set_preset(preset_mode):
+            self._preset = preset_mode
 
     async def async_turn_on(self) ->None:
         """ Turn on the unit

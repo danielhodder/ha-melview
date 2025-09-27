@@ -721,6 +721,41 @@ class MelViewDevice:
             _LOGGER.error('mode %d not supported', mode)
             return False
         return self._send_command('MD{}'.format(MODE_ATA[mode]))
+    
+    def set_preset(self, preset):
+        """ Set operating preset (for ERV units).
+        """
+        if self.unit_type != UNIT_TYPE_ERV:
+            _LOGGER.error('presets not supported for non-ERV units')
+            return False
+
+        if not self.is_power_on():
+            # Try turn on the unit if off.
+            if not self.power_on():
+                return False
+
+        if preset not in MODE_ERV.keys():
+            _LOGGER.error('preset %s not supported', preset)
+            return False
+        return self._send_command('MD{}'.format(MODE_ERV[preset]))
+    
+    async def async_set_preset(self, preset):
+        """ Set operating preset (for ERV units).
+        """
+        if self.unit_type != UNIT_TYPE_ERV:
+            _LOGGER.error('presets not supported for non-ERV units')
+            return False
+
+        if not await self.async_is_power_on():
+            # Try turn on the unit if off.
+            if not await self.async_power_on():
+                return False
+
+        if preset not in MODE_ERV.keys():
+            _LOGGER.error('preset %s not supported', preset)
+            return False
+
+        return await self.async_send_command('MD{}'.format(MODE_ERV[preset]))
 
     async def async_enable_zone(self, zoneid):
         """ Turn on a zone.
